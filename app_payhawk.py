@@ -10,8 +10,9 @@ st.set_page_config(page_title="Control Financiero - Payhawk", layout="wide")
 
 @st.cache_data
 def cargar_y_procesar_datos():
-    ruta_carpeta = r"C:\Users\David\Desktop\Contabilidad\Reporting - Payhawk\Archivo Bruto"
-    archivos = glob.glob(os.path.join(ruta_carpeta, "*.xlsx"))
+    # RUTA RELATIVA ROBUSTA: Busca la carpeta 'Datos' dentro del repositorio actual
+    ruta_carpeta = "Datos"
+    archivos = glob.glob(os.path.join(ruta_carpeta, "*.xlsx")) + glob.glob(os.path.join(ruta_carpeta, "*.xls"))
     
     if not archivos:
         return pd.DataFrame()
@@ -43,7 +44,7 @@ def cargar_y_procesar_datos():
 df = cargar_y_procesar_datos()
 
 if df.empty:
-    st.error("No se encontró ningún archivo de Payhawk en la ruta especificada.")
+    st.error("⚠️ No se encontró ningún archivo de Payhawk en la carpeta 'Datos'. Asegúrate de incluir el fichero Excel dentro del directorio 'Datos' en GitHub.")
     st.stop()
 
 # Definir el orden cronológico para Slicers y Gráficos
@@ -72,7 +73,7 @@ if empleado_filtro:
 # ==========================================
 # VISUALIZATION (KPIs)
 # ==========================================
-st.title("Dashboard Financiero Payhawk")
+st.title("Dashboard Financiero Payhawk - ACK3")
 
 gasto_total = df_filtrado['Importe_EUR'].sum()
 gasto_aprobado = df_filtrado[df_filtrado['Estado_Aprobacion'] == 'Approved']['Importe_EUR'].sum()
@@ -101,19 +102,19 @@ col_graf1, col_graf2 = st.columns(2)
 with col_graf1:
     resumen_cat = df_filtrado.groupby('Categoria')['Importe_EUR'].sum().reset_index().sort_values('Importe_EUR', ascending=True)
     fig_vol = px.bar(resumen_cat, x='Importe_EUR', y='Categoria', orientation='h', title='Gasto por Categoría (Volumen EUR)', color_discrete_sequence=[color_waiting])
-    st.plotly_chart(fig_vol, width="stretch")
+    st.plotly_chart(fig_vol, use_container_width=True)
 
 with col_graf2:
     resumen_estado = df_filtrado.groupby(['Categoria', 'Estado_Aprobacion'])['Importe_EUR'].sum().reset_index()
     mapa_colores = {'Approved': color_approved, 'Waiting approval': color_waiting, 'Not sent for approval': color_notsent}
     fig_estado = px.bar(resumen_estado, x='Categoria', y='Importe_EUR', color='Estado_Aprobacion', title='Cumplimiento Normativo (Proporción EUR)', barmode='stack', color_discrete_map=mapa_colores)
-    st.plotly_chart(fig_estado, width="stretch")
+    st.plotly_chart(fig_estado, use_container_width=True)
 
 st.markdown("### Análisis Volumétrico de Justificantes")
 resumen_tickets = df_filtrado.groupby(['Mes', 'Control_Factura']).size().reset_index(name='Cantidad_Tickets')
 mapa_tickets = {'Con Factura': color_factura, 'Sin Factura': color_sin_factura}
 fig_tickets = px.bar(resumen_tickets, x='Mes', y='Cantidad_Tickets', color='Control_Factura', title='Tickets Subidos vs Faltantes por Mes', barmode='group', category_orders={'Mes': meses_presentes}, color_discrete_map=mapa_tickets)
-st.plotly_chart(fig_tickets, width="stretch")
+st.plotly_chart(fig_tickets, use_container_width=True)
 
 # ==========================================
 # AUDITORÍA DE DATOS
@@ -122,6 +123,6 @@ st.markdown("### Auditoría Financiera: Riesgo de Fraude (Duplicados)")
 df_fraude = df_filtrado[df_filtrado['Duplicado_Fraude'] == True]
 if not df_fraude.empty:
     st.error(f"Se han detectado {len(df_fraude)} registros con misma Fecha, Empleado e Importe exacto.")
-    st.dataframe(df_fraude[['Fecha', 'Empleado', 'Categoria', 'Importe_EUR', 'Estado_Aprobacion']])
+    st.dataframe(df_fraude[['Fecha', 'Empleado', 'Categoria', 'Importe_EUR', 'Estado_Aprobacion']], use_container_width=True)
 else:
     st.success("No se han detectado pagos duplicados en la selección actual.")
