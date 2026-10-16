@@ -157,7 +157,7 @@ with col_graf2:
     )
     st.plotly_chart(fig_estado, width="stretch")
 
-st.markdown("### Análisis Volumétrico de Justificantes")
+st.markdown("### Volumen de Justificantes")
 resumen_tickets = df_filtrado.groupby(['Mes', 'Control_Factura']).size().reset_index(name='Cantidad_Tickets')
 mapa_tickets = {'Con Factura': COLOR_FACTURA, 'Sin Factura': COLOR_SIN_FACTURA}
 fig_tickets = px.bar(
