@@ -2,6 +2,9 @@ git config --global user.name "DavidACK3"
 
 git config --global user.email "david.rodriguez.ext@ack3.eu"
 
+python -m streamlit run app_payhawk.py
+
+
 # 🚀 Guía Operativa de Actualización: Dashboard Financiero Payhawk (Streamlit & GitHub)
 
 Este documento detalla el procedimiento estándar para actualizar el cuadro de mando financiero en la nube alojado en **Streamlit Cloud** y sincronizado mediante **GitHub**, de cara al cierre de reporting periódico (ej. 30 de septiembre de 2026).
