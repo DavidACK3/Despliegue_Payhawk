@@ -86,7 +86,7 @@ df = cargar_y_procesar_datos(archivo_actual, mtime_actual)
 # INTERACTIVIDAD (SLICERS EN BARRA LATERAL)
 # ==========================================
 st.sidebar.header("Filtros del Modelo")
-st.sidebar.caption(f"📄 Archivo activo: `{os.path.basename(archivo_actual)}`")
+st.sidebar.caption(f"Archivo activo: `{os.path.basename(archivo_actual)}`")
 
 meses_disponibles = sorted(df['Mes'].unique())
 mes_filtro = st.sidebar.multiselect("Mes", options=meses_disponibles, default=meses_disponibles)
@@ -104,7 +104,7 @@ if empleado_filtro:
 # ==========================================
 # BUSINESS VISUALIZATION (KPIs EJECUTIVOS)
 # ==========================================
-st.title("📊 Dashboard Financiero Payhawk - ACK3 Global Solutions")
+st.title("Dashboard Financiero Payhawk - ACK3 Global Solutions")
 
 gasto_total = df_filtrado['Importe_EUR'].sum()
 gasto_aprobado = df_filtrado[df_filtrado['Estado_Aprobacion'] == 'Approved']['Importe_EUR'].sum()
@@ -175,7 +175,7 @@ st.markdown("### Auditoría Financiera: Riesgo de Fraude (Duplicados)")
 df_fraude = df_filtrado[df_filtrado['Duplicado_Fraude'] == True].sort_values(by=['Fecha', 'Empleado', 'Importe_EUR'])
 
 if not df_fraude.empty:
-    st.error(f"⚠️ Se han detectado {len(df_fraude)} registros con misma Fecha, Empleado e Importe exacto.")
+    st.error(f"Se han detectado {len(df_fraude)} registros con misma Fecha, Empleado e Importe exacto.")
     st.dataframe(
         df_fraude[['Fecha', 'Empleado', 'Categoria', 'Proveedor', 'Importe_EUR', 'Estado_Aprobacion', 'Control_Factura']],
         width="stretch"
