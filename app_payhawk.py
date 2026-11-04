@@ -166,19 +166,3 @@ fig_tickets = px.bar(
     barmode='group', category_orders={'Mes': meses_disponibles}, color_discrete_map=mapa_tickets
 )
 st.plotly_chart(fig_tickets, width="stretch")
-
-# ==========================================
-# AUDITORÍA FINANCIERA (CONTROL DE DUPLICADOS)
-# ==========================================
-st.markdown("---")
-st.markdown("### Auditoría Financiera: Riesgo de Fraude (Duplicados)")
-df_fraude = df_filtrado[df_filtrado['Duplicado_Fraude'] == True].sort_values(by=['Fecha', 'Empleado', 'Importe_EUR'])
-
-if not df_fraude.empty:
-    st.error(f"Se han detectado {len(df_fraude)} registros con misma Fecha, Empleado e Importe exacto.")
-    st.dataframe(
-        df_fraude[['Fecha', 'Empleado', 'Categoria', 'Proveedor', 'Importe_EUR', 'Estado_Aprobacion', 'Control_Factura']],
-        width="stretch"
-    )
-else:
-    st.success("✅ No se han detectado pagos duplicados en la selección actual.")
